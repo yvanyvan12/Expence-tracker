@@ -3,150 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expense Tracker</title>
+  <title>Expense Tracker Pro</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* === Reset === */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    }
-
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
     body {
-      background: #0f172a; /* sleek dark navy */
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 30px;
+      background: #0f172a; color: #fff; display: flex; justify-content: center;
+      align-items: flex-start; min-height: 100vh; padding: 30px;
     }
-
     .container {
-      background: #1e293b;
-      padding: 25px;
-      border-radius: 15px;
-      width: 100%;
-      max-width: 500px;
-      box-shadow: 0px 8px 20px rgba(0,0,0,0.4);
-      animation: fadeIn 0.6s ease-in-out;
+      background: #1e293b; padding: 25px; border-radius: 15px; width: 100%; max-width: 650px;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.4); animation: fadeIn 0.6s ease-in-out;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 26px;
-      color: #38bdf8;
-    }
-
-    .balance {
-      text-align: center;
-      font-size: 22px;
-      margin: 20px 0;
-    }
-
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+    h2 {text-align: center; margin-bottom: 20px; font-size: 26px; color: #38bdf8;}
+    .balance {text-align: center; font-size: 22px; margin: 20px 0;}
     .summary {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      background: #334155;
+      display: flex; justify-content: space-between; margin-bottom: 20px;
+      padding: 15px; border-radius: 10px; background: #334155;
     }
-
-    .summary div {
-      text-align: center;
-    }
-
-    .income {
-      color: #4ade80;
-    }
-
-    .expense {
-      color: #f87171;
-    }
-
-    h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      color: #e2e8f0;
-    }
-
-    ul {
-      list-style: none;
-      margin-bottom: 20px;
-    }
-
+    .income {color: #4ade80;}
+    .expense {color: #f87171;}
+    h3 {margin: 15px 0 10px; font-size: 18px; color: #e2e8f0;}
+    ul {list-style: none; margin-bottom: 20px;}
     li {
-      background: #475569;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: 0.3s;
+      background: #475569; padding: 12px; border-radius: 8px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
     }
-
-    li.income {
-      border-right: 6px solid #4ade80;
+    li.income {border-left: 6px solid #4ade80;}
+    li.expense {border-left: 6px solid #f87171;}
+    li:hover {transform: scale(1.02);}
+    .delete-btn {background: transparent; border: none; color: #f87171; font-size: 18px; cursor: pointer;}
+    form {display: flex; flex-direction: column; gap: 12px;}
+    input, select {
+      padding: 12px; border-radius: 8px; border: none; outline: none; font-size: 16px;
     }
-
-    li.expense {
-      border-right: 6px solid #f87171;
-    }
-
-    li:hover {
-      transform: scale(1.02);
-    }
-
-    .delete-btn {
-      background: transparent;
-      border: none;
-      color: #f87171;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    input {
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
-
     button {
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #38bdf8;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
+      padding: 12px; border: none; border-radius: 8px; background: #38bdf8;
+      color: #fff; font-size: 16px; cursor: pointer; transition: 0.3s;
     }
-
-    button:hover {
-      background: #0ea5e9;
-    }
+    button:hover {background: #0ea5e9;}
+    canvas {margin-top: 20px;}
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Expense Tracker</h2>
+    <h2>💰 Expense Tracker Pro</h2>
 
     <div class="balance">
       <h3>Your Balance</h3>
@@ -164,6 +66,8 @@
       </div>
     </div>
 
+    <canvas id="chart"></canvas>
+
     <h3>History</h3>
     <ul id="transaction-list"></ul>
 
@@ -171,6 +75,19 @@
     <form id="transaction-form">
       <input type="text" id="description" placeholder="Enter description" required>
       <input type="number" id="amount" placeholder="Enter amount (use negative for expense)" required>
+      <select id="category" required>
+        <option value="" disabled selected>Select Category</option>
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Salary</option>
+        <option>Shopping</option>
+        <option>Other</option>
+      </select>
+      <select id="currency">
+        <option value="$" selected>USD ($)</option>
+        <option value="€">EUR (€)</option>
+        <option value="RWF">RWF (₣)</option>
+      </select>
       <button type="submit">Add Transaction</button>
     </form>
   </div>
@@ -183,52 +100,72 @@
     const form = document.getElementById("transaction-form");
     const descriptionEl = document.getElementById("description");
     const amountEl = document.getElementById("amount");
+    const categoryEl = document.getElementById("category");
+    const currencyEl = document.getElementById("currency");
+    const ctx = document.getElementById("chart").getContext("2d");
 
     let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    let currency = localStorage.getItem("currency") || "$";
+
+    // Chart.js Pie Chart
+    let chart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: ["Income", "Expense"],
+        datasets: [{
+          data: [0, 0],
+          backgroundColor: ["#4ade80", "#f87171"]
+        }]
+      }
+    });
 
     function updateUI() {
       transactionListEl.innerHTML = "";
-      let income = 0;
-      let expense = 0;
+      let income = 0, expense = 0;
 
       transactions.forEach((transaction, index) => {
         const li = document.createElement("li");
         li.classList.add(transaction.amount > 0 ? "income" : "expense");
         li.innerHTML = `
-          ${transaction.description} <span>${transaction.amount > 0 ? "+" : ""}$${transaction.amount}</span>
+          <span>${transaction.description} (${transaction.category})<br>
+          <small>${new Date(transaction.date).toLocaleDateString()}</small></span>
+          <span>${transaction.amount > 0 ? "+" : ""}${currency}${transaction.amount}</span>
           <button class="delete-btn" onclick="deleteTransaction(${index})">✖</button>
         `;
         transactionListEl.appendChild(li);
 
-        if (transaction.amount > 0) {
-          income += transaction.amount;
-        } else {
-          expense += transaction.amount;
-        }
+        if (transaction.amount > 0) income += transaction.amount;
+        else expense += transaction.amount;
       });
 
       const balance = income + expense;
+      balanceEl.textContent = `${currency}${balance.toFixed(2)}`;
+      incomeEl.textContent = `+${currency}${income.toFixed(2)}`;
+      expenseEl.textContent = `-${currency}${Math.abs(expense).toFixed(2)}`;
 
-      balanceEl.textContent = `$${balance.toFixed(2)}`;
-      incomeEl.textContent = `+$${income.toFixed(2)}`;
-      expenseEl.textContent = `-$${Math.abs(expense).toFixed(2)}`;
+      // Update chart
+      chart.data.datasets[0].data = [income, Math.abs(expense)];
+      chart.update();
 
       localStorage.setItem("transactions", JSON.stringify(transactions));
+      localStorage.setItem("currency", currency);
     }
 
     function addTransaction(e) {
       e.preventDefault();
       const description = descriptionEl.value.trim();
       const amount = parseFloat(amountEl.value);
+      const category = categoryEl.value;
 
-      if (description === "" || isNaN(amount)) {
+      if (description === "" || isNaN(amount) || category === "") {
         alert("Please enter valid details.");
         return;
       }
 
-      transactions.push({ description, amount });
+      transactions.push({ description, amount, category, date: new Date() });
       descriptionEl.value = "";
       amountEl.value = "";
+      categoryEl.value = "";
       updateUI();
     }
 
@@ -237,8 +174,12 @@
       updateUI();
     }
 
-    form.addEventListener("submit", addTransaction);
+    currencyEl.addEventListener("change", () => {
+      currency = currencyEl.value;
+      updateUI();
+    });
 
+    form.addEventListener("submit", addTransaction);
     updateUI();
   </script>
 </body>
